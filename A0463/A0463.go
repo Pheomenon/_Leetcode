@@ -24,10 +24,47 @@ package main
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 */
 
-func main() {
-
+func maxAreaOfIsland(grid [][]int) int {
+	r := len(grid)
+	c := len(grid[0])
+	result := 0
+	for i := 0; i < r; i++ {
+		for j := 0; j < c; j++ {
+			if grid[i][j] == 1 {
+				tmp := dfs(grid, i, j)
+				result = max(tmp, result)
+			}
+		}
+	}
+	return result
 }
 
-func islandPerimeter(grid [][]int) int {
+func dfs(grid [][]int, r, c int) int {
+	if !inArea(grid, r, c) {
+		return 0
+	}
+	if grid[r][c] == 0 {
+		return 0
+	}
+	if grid[r][c] != 1 {
+		return 0
+	}
 
+	grid[r][c] = 2
+
+	return 1 + dfs(grid, r-1, c) +
+		dfs(grid, r+1, c) +
+		dfs(grid, r, c-1) +
+		dfs(grid, r, c+1)
+}
+
+func inArea(grid [][]int, r, c int) bool {
+	return 0 <= r && r < len(grid) && 0 <= c && c < len(grid[0])
+}
+
+func max(x, y int) int {
+	if x >= y {
+		return x
+	}
+	return y
 }
