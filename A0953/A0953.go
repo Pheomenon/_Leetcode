@@ -20,7 +20,6 @@
 输出：false
 解释：当前三个字符 "app" 匹配时，第二个字符串相对短一些，然后根据词典编纂规则 "apple" > "app"，因为 'l' > '∅'，其中 '∅' 是空白字符，定义为比任何其他字符都小（更多信息）。
 
-
 提示：
 
 1 <= words.length <= 100
@@ -35,6 +34,83 @@ order.length == 26
 */
 package main
 
-func main() {
+import (
+	"fmt"
+	"math"
+)
 
+func main() {
+	words := []string{"word", "world", "row"}
+	order := "worldabcefghijkmnpqstuvxyz"
+	fmt.Println(isAlienSorted(words, order))
+}
+
+//遍历words数组，取出元素的第一个字符，然后根据order给res数组赋值，
+//res数组的值即该单词首字母在order中的位置，res的索引为该单词在words中的位置
+func isAlienSorted(words []string, order string) bool {
+	res := make([]int, 0, len(words))
+	for i := 0; i < len(words); i++ {
+		for j := 0; j < len(order); j++ {
+			if words[i][0] == order[j] {
+				res = append(res, j)
+				break
+			}
+		}
+	}
+	tmp := math.MinInt64
+	for i := 0; i < len(res); i++ {
+		if tmp < res[i] {
+			tmp = res[i]
+		} else if tmp == res[i] {
+			//如果两个res相邻的两个值相同，说明这两个单词首字母相同，此时调用check逐位检查
+			if check(words[i-1], words[i], order) {
+				continue
+			} else {
+				return false
+			}
+		} else {
+			return false
+		}
+	}
+	return true
+}
+
+func check(str1, str2, order string) bool {
+	str1Position := math.MinInt8
+	str2Position := math.MinInt8
+	str1Size := len(str1)
+	str2Size := len(str2)
+	loop := min(str1Size, str2Size)
+	for i := 1; i < loop; i++ {
+		if str1[i] == str2[i] {
+			continue
+		} else {
+			for k := 0; k < len(order); k++ {
+				if str1[i] == order[k] {
+					str1Position = k
+				}
+				if str2[i] == order[k] {
+					str2Position = k
+				}
+				if str1Position < str2Position && str1Position != math.MinInt8 && str2Position != math.MinInt8 {
+					return true
+				} else if str1Position > str2Position && str1Position != math.MinInt8 && str2Position != math.MinInt8 {
+					return false
+				}
+			}
+		}
+	}
+	//如果str1和str2中较短的那个是另一个的真子集，且str1的长度小于str2则返回true
+	if len(str1) <= len(str2) {
+		return true
+	} else {
+		return false
+	}
+}
+
+func min(x, y int) int {
+	if x <= y {
+		return x
+	}
+	return y
 }

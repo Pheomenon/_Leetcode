@@ -54,6 +54,8 @@ func lengthOfLIS(nums []int) int {
 				R = mid
 			}
 		}
+		//下面三行切片操作有问题，没办法只修改切片中的某一个元素而不影响其他元素，
+		//这道题的解法看Java实现
 		remainder := result[L+1:]
 		result = append(result[:L], v)
 		result = append(result, remainder...)
