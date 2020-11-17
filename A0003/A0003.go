@@ -29,29 +29,46 @@ import (
 )
 
 func main() {
-	s := "nfpdmpi"
+	s := "pwwkew"
 	fmt.Println(lengthOfLongestSubstring(s))
 }
 
-func lengthOfLongestSubstring(s string) int {
-	m := map[byte]int{}
-	right, ans := -1, 0
-	for i := 0; i < len(s); i++ {
-		if i != 0 {
-			delete(m, s[i-1])
-		}
-		for right+1 < len(s) && m[s[right+1]] == 0 {
-			m[s[right+1]]++
-			right++
-		}
-		ans = max(ans, right-i+1)
-	}
-	return ans
-}
-
+//func lengthOfLongestSubstring(s string) int {
+//	m := map[byte]int{}
+//	right, ans := -1, 0
+//	for i := 0; i < len(s); i++ {
+//		if i != 0 {
+//			delete(m, s[i-1])
+//		}
+//		for right+1 < len(s) && m[s[right+1]] == 0 {
+//			m[s[right+1]]++
+//			right++
+//		}
+//		ans = max(ans, right-i+1)
+//	}
+//	return ans
+//}
+//
 func max(x, y int) int {
 	if x < y {
 		return y
 	}
 	return x
+}
+
+func lengthOfLongestSubstring(s string) int {
+	window := map[rune]int{}
+	left, right := 0, 0
+	res := 0
+	for _, c := range s {
+		right++
+		window[c]++
+		for window[c] > 1 {
+			d := s[left]
+			left++
+			window[rune(d)]--
+		}
+		res = max(right-left, res)
+	}
+	return res
 }

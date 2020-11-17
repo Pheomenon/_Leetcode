@@ -56,7 +56,7 @@ func checkInclusion(s1 string, s2 string) bool {
 			v, ok := need[rune(d)]
 			if ok {
 				if window[rune(d)] == v {
-					//valid--
+					valid--
 				}
 				window[rune(d)]--
 			}
