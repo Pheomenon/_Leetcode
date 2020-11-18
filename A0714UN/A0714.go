@@ -1,7 +1,3 @@
-package main
-
-import "fmt"
-
 /**
 给定一个整数数组 prices，其中第 i 个元素代表了第 i 天的股票价格 ；
 非负整数 fee 代表了交易股票的手续费用。你可以无限次地完成交易，
@@ -12,7 +8,6 @@ import "fmt"
 注意：这里的一笔交易指买入持有并卖出股票的整个过程，每笔交易你只需要为支付一次手续费。
 
 示例 1:
-
 输入: prices = [1, 3, 2, 8, 4, 9], fee = 2
 输出: 8
 解释: 能够达到的最大利润:
@@ -21,8 +16,8 @@ import "fmt"
 在此处买入 prices[4] = 4
 在此处卖出 prices[5] = 9
 总利润: ((8 - 1) - 2) + ((9 - 4) - 2) = 8.
-注意:
 
+注意:
 0 < prices.length <= 50000.
 0 < prices[i] < 50000.
 0 <= fee < 50000.
@@ -34,20 +29,27 @@ import "fmt"
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 */
 
+package main
+
+import (
+	"fmt"
+	"math"
+)
+
 func main() {
-	prices := []int{1000, 3, 2, 8, 4, 9}
+	prices := []int{1, 3, 2, 8, 4, 9}
 	fee := 2
 	fmt.Println(maxProfit(prices, fee))
 }
 
 func maxProfit(prices []int, fee int) int {
-	cash := 0
-	hold := -prices[0]
+	dp_i_0, dp_i_1 := 0, math.MinInt32
 	for i := 0; i < len(prices); i++ {
-		cash = max(hold+prices[i]-fee, cash)
-		hold = max(hold, cash-prices[i])
+		tmp := dp_i_0
+		dp_i_0 = max(dp_i_0, dp_i_1+prices[i])
+		dp_i_1 = max(dp_i_1, tmp-prices[i]-fee)
 	}
-	return cash
+	return dp_i_0
 }
 
 func max(x, y int) int {
