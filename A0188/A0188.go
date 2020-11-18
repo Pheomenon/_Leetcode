@@ -42,13 +42,7 @@ func maxProfit(max_k int, prices []int) int {
 	}
 	n := len(prices)
 	dp := new([1000][109][2]int)
-	for i := 0; i < 1000; i++ {
-		for j := 0; j < 109; j++ {
-			for k := 0; k < 2; k++ {
-				dp[i][j][k] = 0
-			}
-		}
-	}
+
 	for i := 0; i < n; i++ {
 		for k := max_k; k >= 1; k-- {
 			if i-1 == -1 {
