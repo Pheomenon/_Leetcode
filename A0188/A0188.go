@@ -28,11 +28,44 @@
 */
 package main
 
-func main() {
+import "fmt"
 
+func main() {
+	k := 2
+	prices := []int{3, 2, 6, 5, 0, 3}
+	fmt.Println(maxProfit(k, prices))
 }
 
-//func maxProfit(k int, prices []int) int {
-//	n := len(prices)
-//
-//}
+func maxProfit(max_k int, prices []int) int {
+	if len(prices) == 0 {
+		return 0
+	}
+	n := len(prices)
+	dp := new([1000][109][2]int)
+	for i := 0; i < 1000; i++ {
+		for j := 0; j < 109; j++ {
+			for k := 0; k < 2; k++ {
+				dp[i][j][k] = 0
+			}
+		}
+	}
+	for i := 0; i < n; i++ {
+		for k := max_k; k >= 1; k-- {
+			if i-1 == -1 {
+				dp[i][k][0] = 0
+				dp[i][k][1] = -prices[i]
+				continue
+			}
+			dp[i][k][0] = max(dp[i-1][k][0], dp[i-1][k][1]+prices[i])
+			dp[i][k][1] = max(dp[i-1][k][1], dp[i-1][k-1][0]-prices[i])
+		}
+	}
+	return dp[n-1][max_k][0]
+}
+
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
+}
