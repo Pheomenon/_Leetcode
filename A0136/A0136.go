@@ -31,9 +31,8 @@ func main() {
 */
 
 func singleNumber(nums []int) int {
-	single := 0
-	for _, v := range nums {
-		single ^= v
+	for i := 1; i < len(nums); i++ {
+		nums[0] ^= nums[i]
 	}
-	return single
+	return nums[0]
 }
