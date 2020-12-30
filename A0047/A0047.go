@@ -71,12 +71,3 @@ func permuteUnique(nums []int) [][]int {
 	backtrack(nums, track)
 	return ans
 }
-
-func contain(num int, track []int) bool {
-	for i := 0; i < len(track); i++ {
-		if track[i] == num {
-			return true
-		}
-	}
-	return false
-}
