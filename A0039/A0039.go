@@ -80,31 +80,3 @@ func combinationSum(candidates []int, target int) [][]int {
 	backtrack(0, track, sum)
 	return ans
 }
-
-//func combinationSum(candidates []int, target int) [][]int {
-//sort.Ints(candidates)
-//ans := make([][]int, 0)
-//for i := 0; i < len(candidates); i++ {
-//	cr := make([]int, 0)
-//	result := check(i, candidates, target, cr,0)
-//	if result != nil {
-//		ans = append(ans, result)
-//	}
-//}
-//return ans
-//}
-
-//func check(x int, candidates []int, target int, cr []int,sum int) []int {
-//	if sum == target{
-//		return cr
-//	}else if sum > target{
-//
-//	}
-//
-//
-//	for i := x; i < len(candidates); i++ {
-//		if candidates[i] < target {
-//			result = append(result, candidates[i])
-//		}
-//	}
-//}
