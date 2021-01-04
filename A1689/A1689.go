@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 )
 
 /*
@@ -37,20 +36,19 @@ n 不含任何前导零并总是表示正整数
 */
 
 func main() {
-	n := "82734"
+	n := "27346209830709182346"
 	fmt.Println(minPartitions(n))
 }
 
 func minPartitions(n string) int {
-	var max int
-	for _, v := range n {
-		tmp, _ := strconv.Atoi(string(v))
-		if tmp >= max {
-			max = tmp
+	var max byte
+	for i := 0; i < len(n); i++ {
+		if n[i] > max {
+			max = n[i]
 		}
 		if max == 9 {
-			return max
+			return 9
 		}
 	}
-	return max
+	return int(max - '0')
 }
