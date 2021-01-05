@@ -29,7 +29,7 @@ import "fmt"
 */
 
 func main() {
-	s := "abc"
+	s := "aaa"
 	fmt.Println(countSubstrings(s))
 }
 
@@ -52,7 +52,7 @@ func check(s string) bool {
 			return false
 		}
 		i++
-		j++
+		j--
 	}
 	return true
 }
