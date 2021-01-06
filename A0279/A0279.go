@@ -22,32 +22,42 @@ import "fmt"
 */
 
 func main() {
-	n := 12
+	n := 13
 	fmt.Println(numSquares(n))
 }
 
 func numSquares(n int) int {
-	ans := 0
 	perfectSquare := make([]int, 0)
 	now := 1
-	for i := 0; now < n; i++ {
+	for i := 0; now <= n; i++ {
 		now = pow(i + 1)
 		perfectSquare = append(perfectSquare, now)
 	}
 
-	for n != 0 {
-		for i := len(perfectSquare) - 1; i >= 0; {
-			if n-perfectSquare[i] >= 0 {
-				n -= perfectSquare[i]
-				ans++
+	dp := make([]int, n+1)
+
+	for i := 1; i < len(dp); i++ {
+		dp[i] = n + 1
+	}
+
+	for i := 0; i < len(dp); i++ {
+		for j := 0; j < len(perfectSquare)-1; j++ {
+			if i-perfectSquare[j] < 0 {
 				continue
 			}
-			i--
+			dp[i] = min(dp[i], dp[i-perfectSquare[j]]+1)
 		}
 	}
-	return ans
+	return dp[len(dp)-1]
 }
 
 func pow(x int) int {
 	return x * x
+}
+
+func min(x, y int) int {
+	if x < y {
+		return x
+	}
+	return y
 }
