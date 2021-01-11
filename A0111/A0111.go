@@ -22,10 +22,6 @@
 */
 package main
 
-import (
-	"math"
-)
-
 type TreeNode struct {
 	Val   int
 	Left  *TreeNode
@@ -36,26 +32,60 @@ func main() {
 
 }
 
+//BFS Version
 func minDepth(root *TreeNode) int {
 	if root == nil {
 		return 0
 	}
-	if root.Left == nil && root.Right == nil {
-		return 1
+	queue := make([]*TreeNode, 0)
+	head := -1
+	layer := 1
+	queue = append(queue, root)
+	head++
+
+	for head >= 0 {
+		sz := len(queue)
+		for i := 0; i < sz; i++ {
+			node := queue[0]
+			queue = queue[1:]
+			head--
+			if node.Right == nil && node.Left == nil {
+				return layer
+			}
+			if node.Left != nil {
+				queue = append(queue, node.Left)
+				head++
+			}
+			if node.Right != nil {
+				queue = append(queue, node.Right)
+				head++
+			}
+		}
+		layer++
 	}
-	result := math.MaxInt64
-	if root.Left != nil {
-		result = min(result, minDepth(root.Left))
-	}
-	if root.Right != nil {
-		result = min(result, minDepth(root.Right))
-	}
-	return result + 1
+	return layer
 }
 
-func min(x, y int) int {
-	if x < y {
-		return x
-	}
-	return y
-}
+//func minDepth(root *TreeNode) int {
+//	if root == nil {
+//		return 0
+//	}
+//	if root.Left == nil && root.Right == nil {
+//		return 1
+//	}
+//	result := math.MaxInt64
+//	if root.Left != nil {
+//		result = min(result, minDepth(root.Left))
+//	}
+//	if root.Right != nil {
+//		result = min(result, minDepth(root.Right))
+//	}
+//	return result + 1
+//}
+//
+//func min(x, y int) int {
+//	if x < y {
+//		return x
+//	}
+//	return y
+//}
