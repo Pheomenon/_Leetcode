@@ -1,7 +1,7 @@
 /**
 你有一个带有四个圆形拨轮的转盘锁。
 每个拨轮都有10个数字： '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' 。
-每个拨轮可以自由旋转：例如把 '9' 变为  '0'，'0' 变为 '9' 。
+每个拨轮可以自由旋转：例如把 '9' 变为 '0'，'0' 变为 '9' 。
 每次旋转都只能旋转一个拨轮的一位数字。
 锁的初始数字为 '0000' ，一个代表四个拨轮的数字的字符串。
 列表 deadends 包含了一组死亡数字，一旦拨轮的数字和列表里的任何一个元素相同，
@@ -46,24 +46,74 @@
 */
 package main
 
-//func openLock(deadends []string, target string) int {
-//
-//}
+func main() {
+	dead := []string{"0201", "0101", "0102", "1212", "2002"}
+	target := "0202"
+	openLock(dead, target)
+}
 
-//func addOne(str string,j int) string {
-//	if str[j] == '9'{
-//		tmp, _ := strconv.ParseInt(str,10,32)
-//		str = str[:j-1]
-//		str = str+"0"
-//	}else {
-//		str[j] += 1
-//	}
-//	return str
-//}
+func openLock(deadends []string, target string) int {
+	// 直接死锁
+	if target == "0000" {
+		return 0
+	}
+	q := make([]string, 0)
+	q = append(q, "0000")
 
-//func subOne(str string,j int) string{
-//	if str[j] == '0' {
-//		str = str[:j-1]
-//		str
-//	}
-//}
+	times := 0
+	visited := map[string]bool{}
+	if visited["0000"] {
+		return -1
+	}
+	for _, deadend := range deadends {
+		visited[deadend] = true
+	}
+
+	for len(q) > 0 {
+		sz := len(q)
+		for i := 0; i < sz; i++ {
+			curr := q[0]
+			q = q[1:]
+			if _, ok := visited[curr]; ok {
+				continue
+			}
+			if curr == target {
+				return times
+			}
+			visited[curr] = true
+			for i := 0; i < 4; i++ {
+				item := keyDown(curr, i)
+				if _, ok := visited[item]; !ok {
+					q = append(q, item)
+				}
+
+				item = keyUp(curr, i)
+				if _, ok := visited[item]; !ok {
+					q = append(q, item)
+				}
+			}
+		}
+		times++
+	}
+	return -1
+}
+
+func keyUp(keys string, idx int) string {
+	k := []byte(keys)
+	if k[idx] == '9' {
+		k[idx] = '0'
+	} else {
+		k[idx]++
+	}
+	return string(k)
+}
+
+func keyDown(keys string, idx int) string {
+	k := []byte(keys)
+	if k[idx] == '0' {
+		k[idx] = '9'
+	} else {
+		k[idx]--
+	}
+	return string(k)
+}
