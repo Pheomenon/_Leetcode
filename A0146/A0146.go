@@ -1,14 +1,14 @@
 /**
-运用你所掌握的数据结构，设计和实现一个  LRU (最近最少使用) 缓存机制 。
+运用你所掌握的数据结构，设计和实现一个 LRU (最近最少使用) 缓存机制 。
 实现 LRUCache 类：
 
-LRUCache(int capacity) 以正整数作为容量 capacity 初始化 LRU 缓存
+LRUCache(int capacity) 以正整数作为容量 capacity 初始化 LRU 缓存
 int get(int key) 如果关键字 key 存在于缓存中，则返回关键字的值，否则返回 -1 。
-void put(int key, int value) 如果关键字已经存在，则变更其数据值；
+void put(int key, int value)如果关键字已经存在，则变更其数据值；
 如果关键字不存在，则插入该组「关键字-值」。当缓存容量达到上限时，
 它应该在写入新数据之前删除最久未使用的数据值，从而为新的数据值留出空间。
 
-进阶：你是否可以在 O(1) 时间复杂度内完成这两种操作？
+进阶：你是否可以在 O(1) 时间复杂度内完成这两种操作？
 
 示例：
 输入
@@ -46,35 +46,94 @@ package main
 
 func main() {
 	op := Constructor(2)
-	op.Put(1, 1)
+	op.Put(2, 1)
 	op.Put(2, 2)
-	op.Get(1)
-	op.Put(3, 3)
 	op.Get(2)
-	op.Put(4, 4)
-	op.Get(1)
-	op.Get(3)
-	op.Get(4)
+	op.Put(1, 1)
+	op.Put(4, 1)
+	op.Get(2)
 }
 
 type LRUCache struct {
-	cache map[int]int
+	capacity int
+	cache    map[int]*node
+	head     *node
+	tail     *node
+	len      int
 }
 
-type deque struct {
-	next, prev *deque
+type node struct {
+	key   int
+	value int
+	next  *node
+	prev  *node
+}
+
+func (c *LRUCache) addFirst(item *node) {
+	item.next = c.head.next
+	item.prev = c.head
+	c.head.next.prev = item
+	c.head.next = item
+}
+
+func (c *LRUCache) remove(item *node) {
+	item.next.prev = item.prev
+	item.prev.next = item.next
+}
+
+func (c *LRUCache) removeLast() *node {
+	node := c.tail.prev
+	c.remove(node)
+	return node
+}
+
+func (c *LRUCache) size() int {
+	return c.len
 }
 
 func Constructor(capacity int) LRUCache {
-	return LRUCache{}
+	l := LRUCache{
+		capacity: capacity,
+		cache:    map[int]*node{},
+		head:     &node{},
+		tail:     &node{},
+	}
+	l.head.next = l.tail
+	l.tail.prev = l.head
+	return l
 }
 
 func (c *LRUCache) Get(key int) int {
-
+	if v, ok := c.cache[key]; !ok {
+		return -1
+	} else {
+		c.Put(key, v.value)
+		return v.value
+	}
 }
 
 func (c *LRUCache) Put(key int, value int) {
-
+	if _, ok := c.cache[key]; !ok {
+		node := &node{
+			key:   key,
+			value: value,
+			next:  nil,
+			prev:  nil,
+		}
+		c.addFirst(node)
+		c.cache[key] = node
+		c.len++
+		if c.capacity < c.len {
+			ret := c.removeLast()
+			delete(c.cache, ret.key)
+			c.len--
+		}
+	} else {
+		newNode := c.cache[key]
+		newNode.value = value
+		c.remove(newNode)
+		c.addFirst(newNode)
+	}
 }
 
 /**
