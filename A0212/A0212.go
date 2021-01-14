@@ -1,5 +1,7 @@
 package main
 
+import "math"
+
 /*
 给定一个 m x n 二维字符网格board和一个单词（字符串）列表 words，
 找出所有同时在二维网格和字典中出现的单词。
@@ -34,52 +36,89 @@ words 中的所有字符串互不相同
 
 func main() {
 	board := [][]byte{
-		{'o', 'a', 'a', 'n'},
-		{'e', 't', 'a', 'e'},
-		{'i', 'h', 'k', 'r'},
-		{'i', 'f', 'l', 'v'}}
-	words := []string{"oath", "pea", "eat", "rain"}
+		{'o', 'a', 'a', 'n'}, {'e', 't', 'a', 'e'}, {'i', 'h', 'k', 'r'}, {'i', 'f', 'l', 'v'},
+	}
+	words := []string{"oath", "pea", "eat", "rain", "hklf", "hf"}
 	findWords(board, words)
 
 }
 
-func findWords(board [][]byte, words []string) []string {
-	ans := make([]string, 0)
-	maxlength := 0
-	for _, word := range words {
-		if maxlength < len(word) {
-			maxlength = len(word)
+type trie struct {
+	isEnd bool
+	next  [26]*trie
+}
+
+func (t *trie) insert(word string) {
+	for _, w := range word {
+		if t.next[w-'a'] == nil {
+			t.next[w-'a'] = &trie{}
+		}
+		t = t.next[w-'a']
+	}
+	t.isEnd = true
+}
+
+func (t *trie) search(word string) bool {
+	for _, w := range word {
+		if t.next[w-'a'] == nil {
+			return false
+		} else {
+			t = t.next[w-'a']
 		}
 	}
-	var dfs func(board [][]byte, track string, row, col int, maxlength int)
-	dfs = func(board [][]byte, track string, row, col int, maxlength int) {
-		if row == -1 || col == -1 || row > len(board)-1 || col > len(board[0])-1 {
-			return
+	return t.isEnd == true
+}
+
+func (t *trie) delete(word string) {
+	t.next[word[0]-'a'] = nil
+}
+
+func findWords(board [][]byte, words []string) []string {
+	ans := make([]string, 0)
+	trie := &trie{}
+	maxL, minL := 0, math.MaxInt64
+	for _, word := range words {
+		n := len(word)
+		if n > maxL {
+			maxL = n
 		}
-		for _, word := range words {
-			if word == track {
-				ans = append(ans, track)
-				return
-			}
+		if n < minL {
+			minL = n
 		}
-		if len(track) == maxlength {
+		trie.insert(word)
+	}
+
+	var backtrack func(track string, row, col int)
+	backtrack = func(track string, row, col int) {
+		if trie.search(track) {
+			ans = append(ans, track)
+			trie.delete(track)
+		}
+		if row > len(board)-1 || row < 0 || col > len(board[0])-1 || col < 0 || len(track) > maxL {
 			return
 		}
 
-		for i := row; i < len(board); i++ {
-			for j := col; j < len(board[i]); j++ {
-				track += string(board[i][j])
-				dfs(board, track, row+1, col, maxlength)
-				track = track[:len(track)-1]
-				dfs(board, track, row, col+1, maxlength)
-				track = track[:len(track)-1]
-				dfs(board, track, row-1, col, maxlength)
-				track = track[:len(track)-1]
-				dfs(board, track, row, col-1, maxlength)
-				track = track[:len(track)-1]
+		c := board[row][col]
+		if c == '*' {
+			return
+		}
+
+		track += string(board[row][col])
+		board[row][col] = '*'
+		backtrack(track, row+1, col)
+		backtrack(track, row-1, col)
+		backtrack(track, row, col+1)
+		backtrack(track, row, col-1)
+		board[row][col] = c
+	}
+	for i := 0; i < len(board); i++ {
+		for j := 0; j < len(board[i]); j++ {
+			if trie.search(string(board[i][j])) {
+				ans = append(ans, string(board[i][j]))
+				trie.delete(string(board[i][j]))
 			}
+			backtrack("", i, j)
 		}
 	}
-	dfs(board, "", 0, 0, maxlength)
 	return ans
 }
