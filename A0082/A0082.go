@@ -39,19 +39,23 @@ func deleteDuplicates(head *ListNode) *ListNode {
 	ans := dummy
 	for curr != nil {
 		next := curr.Next
-		for next != nil && curr.Val == next.Val {
+		for next != nil && curr.Val == next.Val { //如果有重复节点那next就一直走到第一个非重复节点上
 			next = next.Next
 			flag = true
 		}
 		if flag {
 			curr = next
 			flag = false
-		} else {
+		} else { //没有重复节点curr往后走一个节点，dummy.Next指向curr
 			dummy.Next = curr
 			dummy = curr
 			curr = curr.Next
 		}
 	}
+	/*
+		dummy指向最后一个元素，如果这是重复元素那么dummy实际上指的是nil
+		如果是非重复元素dummy指的就是具体的数字节点
+	*/
 	dummy.Next = curr
 	return ans.Next
 }
