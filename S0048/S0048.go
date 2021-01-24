@@ -45,10 +45,10 @@ func lengthOfLongestSubstring(s string) int {
 			delete(window, s[i-1])
 		}
 		for right+1 < len(s) && !window[s[right+1]] {
-			window[s[right]] = true
+			window[s[right+1]] = true
 			right++
 		}
-		ans = max(ans, right-i)
+		ans = max(ans, right-i+1)
 	}
 	return ans
 }
