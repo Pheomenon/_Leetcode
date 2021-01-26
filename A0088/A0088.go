@@ -1,5 +1,7 @@
 package main
 
+import "sort"
+
 /*
 给你两个有序整数数组 nums1 和 nums2，请你将 nums2合并到 nums1 中，使 nums1 成为一个有序数组。
 初始化nums1 和 nums2 的元素数量分别为m和n。你可以假设 nums1 的空间大小等于 m + n，这样它就有足够的空间保存来自 nums2 的元素。
@@ -27,23 +29,20 @@ nums2.length == n
 */
 
 func main() {
-
+	nums1 := []int{1}
+	m := 1
+	nums2 := []int{0}
+	n := 0
+	merge(nums1, m, nums2, n)
 }
 
-//func merge(nums1 []int, m int, nums2 []int, n int) {
-//	ptr1 := 0
-//	ptr2 := 0
-//
-//	for nums1[ptr1] != 0 {
-//		if nums1[ptr1] < nums2[ptr2] {
-//			ptr1++
-//		} else {
-//			right := make([]int, len(nums1[ptr1:]))
-//			right = nums1[ptr1:]
-//			nums1[ptr1] = nums2[ptr2]
-//			nums1 = append(nums1[:ptr1+1], right...)
-//			ptr1++
-//			ptr2++
-//		}
-//	}
-//}
+func merge(nums1 []int, m int, nums2 []int, n int) {
+	i := len(nums1) - 1
+	j := len(nums2) - 1
+	for j > -1 && i > -1 && nums1[i] == 0 {
+		nums1[i] = nums2[j]
+		i--
+		j--
+	}
+	sort.Ints(nums1)
+}
