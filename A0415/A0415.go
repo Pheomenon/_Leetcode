@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 /*
 给定两个字符串形式的非负整数 num1 和num2 ，计算它们的和。
@@ -25,60 +28,61 @@ func main() {
 }
 
 func addStrings(num1 string, num2 string) string {
-	i := len(num1) - 1
-	j := len(num2) - 1
-	var ret byte
-	ret = '0'
-	var ans []byte
+	if num1 == "0" {
+		return num2
+	} else if num2 == "0" {
+		return num1
+	}
+	num1L := len(num1) - 1
+	num2L := len(num2) - 1
+	ans := make([]uint8, max(num1L, num2L)+3)
+	ansI := len(ans) - 1
 
-	if i > j {
-		ans = make([]byte, len(num1))
-	} else {
-		ans = make([]byte, len(num2))
+	for num1L >= 0 || num2L >= 0 {
+		if num1L >= 0 && num2L >= 0 {
+			r := num1[num1L] - '0' + num2[num2L] - '0'
+			r += ans[ansI]
+			ans[ansI] = r % 10
+			ans[ansI-1] = r / 10
+			num1L--
+			num2L--
+			ansI--
+		} else if num1L < 0 && num2L >= 0 {
+			r := num2[num2L] - '0'
+			r += ans[ansI]
+			ans[ansI] = r % 10
+			ans[ansI-1] = r / 10
+			num2L--
+			ansI--
+		} else if num2L < 0 && num1L >= 0 {
+			r := num1[num1L] - '0'
+			r += ans[ansI]
+			ans[ansI] = r % 10
+			ans[ansI-1] = r / 10
+			num1L--
+			ansI--
+		}
 	}
 
-	for i > -1 && j > -1 {
-		if len(num1) >= len(num2) {
-			ans[i], ret = add(num1[i]-'0', num2[j]-'0'+ret-'0')
-			i--
-			j--
+	for _, an := range ans {
+		if an == 0 {
+			ans = ans[1:]
 		} else {
-			ans[j], ret = add(num1[i]-'0', num2[j]-'0'+ret-'0')
-			i--
-			j--
+			break
 		}
 	}
 
-	if i == j {
-		if ret != '0' {
-			ans = append([]byte{ret}, ans...)
-		}
-		return string(ans)
-	}
+	var ansS strings.Builder
 
-	if i != -1 {
-		for ; i >= 0; i-- {
-			ans[i], ret = add(num1[i]-'0', ret-'0')
-		}
+	for i := 0; i < len(ans); i++ {
+		ansS.WriteByte(ans[i] + '0')
 	}
-
-	if j != -1 {
-		for ; j >= 0; j-- {
-			ans[j], ret = add(num2[j]-'0', ret-'0')
-		}
-	}
-	if ret != '0' {
-		ans = append([]byte{ret}, ans...)
-	}
-
-	return string(ans)
+	return ansS.String()
 }
 
-func add(x, y byte) (byte, byte) {
-	sum := x + y
-	if sum >= 10 {
-		return sum - 10 + '0', sum/10 + '0'
-	} else {
-		return sum + '0', 0 + '0'
+func max(x, y int) int {
+	if x > y {
+		return x
 	}
+	return y
 }
