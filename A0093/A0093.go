@@ -1,10 +1,5 @@
 package main
 
-import (
-	"strconv"
-	"strings"
-)
-
 /*
 给定一个只包含数字的字符串，复原它并返回所有可能的 IP 地址格式。
 有效的 IP 地址 正好由四个整数（每个整数位于 0 到 255 之间组成，且不能含有前导 0），整数之间用 '.' 分隔。
@@ -49,27 +44,8 @@ func restoreIpAddresses(s string) []string {
 	ans := make([]string, 0)
 	var backtrack func(key int, track []string, str string)
 	backtrack = func(key int, track []string, str string) {
-		if key == 4 {
-			if len(s) == 0 {
-				str := strings.Join(track, ".")
-				ans = append(ans, str)
-			}
-		}
-		for i := 0; i < 3; i++ {
-			if i <= len(s) {
-				v, _ := strconv.Atoi(s[:i])
-				if v <= 255 {
-					track = append(track, s[:i])
-					str := s[i:]
-					backtrack(key+1, track, str)
-					track = track[:len(track)-1]
-				}
-				if v == 0 {
-					break
-				}
-			}
-		}
+
 	}
-	backtrack(0, make([]string, 0), "")
+	backtrack(0, []string{}, "")
 	return ans
 }
