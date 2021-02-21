@@ -32,39 +32,28 @@ func main() {
 }
 
 func permute(nums []int) [][]int {
-	var res = make([][]int, 0)
-	track := make([]int, 0)
-	var b func(nums []int, track []int)
-	b = func(nums []int, track []int) {
-		//触发结束条件
+	ans := make([][]int, 0)
+	visited := map[int]bool{}
+	var backtrack func(track []int, index int)
+	backtrack = func(track []int, index int) {
 		if len(track) == len(nums) {
-			//这里要特别注意如果直接把track append给res的化传的是引用，
-			//track后面值被修改的时候会影响到res，所以这里必须手动Copy出track的一个副本来
-			temp := make([]int, len(track))
-			copy(temp, track)
-			res = append(res, temp)
+			tmp := make([]int, len(track))
+			copy(tmp, track)
+			ans = append(ans, tmp)
 			return
 		}
 
-		for i := 0; i < len(nums); i++ {
-			//排除不合法的选择
-			if contain(nums[i], track) {
+		for i := index; i < len(nums); i++ {
+			if visited[i] {
 				continue
 			}
 			track = append(track, nums[i])
-			b(nums, track)
+			visited[i] = true
+			backtrack(track, index)
 			track = track[:len(track)-1]
+			visited[i] = false
 		}
 	}
-	b(nums, track)
-	return res
-}
-
-func contain(num int, track []int) bool {
-	for j := 0; j < len(track); j++ {
-		if track[j] == num {
-			return true
-		}
-	}
-	return false
+	backtrack([]int{}, 0)
+	return ans
 }
