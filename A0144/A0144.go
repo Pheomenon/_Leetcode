@@ -48,17 +48,16 @@ type TreeNode struct {
 }
 
 func preorderTraversal(root *TreeNode) []int {
-	var preorder func(node *TreeNode)
-	vals := make([]int, 0)
-	preorder = func(node *TreeNode) {
-		if node == nil {
+	ans := make([]int, 0)
+	var preorder func(root *TreeNode)
+	preorder = func(root *TreeNode) {
+		if root == nil {
 			return
 		}
-
-		vals = append(vals, node.Val)
-		preorder(node.Left)
-		preorder(node.Right)
+		ans = append(ans, root.Val)
+		preorder(root.Left)
+		preorder(root.Right)
 	}
 	preorder(root)
-	return vals
+	return ans
 }

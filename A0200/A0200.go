@@ -41,40 +41,39 @@ func main() {
 }
 
 func numIslands(grid [][]byte) int {
-	if grid == nil || len(grid) == 0 {
+	if len(grid) == 0 {
 		return 0
 	}
-	r := len(grid)
-	c := len(grid[0])
-	result := 0
-	for i := 0; i < r; i++ {
-		for j := 0; j < c; j++ {
-			if grid[i][j] != '0' {
-				result++
-				dfs(grid, i, j)
+	var ans int
+	var dfs func(r, l int)
+	dfs = func(r, l int) {
+		if !inArea(grid, r, l) {
+			return
+		}
+		if grid[r][l] == '1' {
+			grid[r][l] = 0
+			dfs(r+1, l)
+			dfs(r-1, l)
+			dfs(r, l+1)
+			dfs(r, l-1)
+		} else {
+			return
+		}
+	}
+	for i := 0; i < len(grid); i++ {
+		for j := 0; j < len(grid[0]); j++ {
+			if grid[i][j] == '1' {
+				ans++
+				dfs(i, j)
 			}
 		}
-		dfs(grid, r, c)
 	}
-	return result
+	return ans
 }
 
-func dfs(grid [][]byte, r, c int) {
-	if !inArea(grid, r, c) {
-		return
+func inArea(grid [][]byte, row, col int) bool {
+	if row < 0 || row >= len(grid) || col < 0 || col >= len(grid[0]) {
+		return false
 	}
-	if grid[r][c] == '0' {
-		return
-	}
-
-	grid[r][c] = '0'
-
-	dfs(grid, r-1, c)
-	dfs(grid, r+1, c)
-	dfs(grid, r, c-1)
-	dfs(grid, r, c+1)
-}
-
-func inArea(grid [][]byte, r, c int) bool {
-	return 0 <= r && r < len(grid) && 0 <= c && c < len(grid[0])
+	return true
 }

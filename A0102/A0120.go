@@ -39,28 +39,27 @@ func levelOrder(root *TreeNode) [][]int {
 	if root == nil {
 		return [][]int{}
 	}
+
 	q := make([]*TreeNode, 0)
 	q = append(q, root)
 	ans := make([][]int, 0)
-	var track func(node *TreeNode)
-	track = func(node *TreeNode) {
-		for len(q) > 0 {
-			sz := len(q)
-			tmp := make([]int, 0)
-			for i := 0; i < sz; i++ {
-				node := q[0]
-				q = q[1:]
-				tmp = append(tmp, node.Val)
-				if node.Left != nil {
-					q = append(q, node.Left)
-				}
-				if node.Right != nil {
-					q = append(q, node.Right)
-				}
+
+	for len(q) > 0 {
+		sz := len(q)
+		tmp := make([]int, 0)
+
+		for i := 0; i < sz; i++ {
+			node := q[0]
+			tmp = append(tmp, node.Val)
+			q = q[1:]
+			if node.Left != nil {
+				q = append(q, node.Left)
 			}
-			ans = append(ans, tmp)
+			if node.Right != nil {
+				q = append(q, node.Right)
+			}
 		}
+		ans = append(ans, tmp)
 	}
-	track(root)
 	return ans
 }
