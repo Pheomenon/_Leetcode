@@ -24,16 +24,14 @@ func main() {
 }
 
 func maxSubArray(nums []int) int {
-	max := nums[0]
+	m := nums[0]
 	for i := 1; i < len(nums); i++ {
 		if nums[i]+nums[i-1] > nums[i] {
-			nums[i] += nums[i-1]
+			nums[i] = nums[i] + nums[i-1]
 		}
-		if nums[i] > max {
-			max = nums[i]
-		}
+		m = max(m, nums[i])
 	}
-	return max
+	return m
 }
 
 func max(x, y int) int {
