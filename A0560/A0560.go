@@ -25,38 +25,18 @@ func main() {
 	fmt.Println(subarraySum(nums, k))
 }
 
-//只能正确处理只有正数的数组
 func subarraySum(nums []int, k int) int {
-	container := make([][]int, 0)
+	m := map[int]int{}
+	m[0]++
+	sum := 0
 	ans := 0
-	sum := nums[0]
-	if sum == k {
-		ans++
-	}
-	left, right := 0, 1
-	for ; right < len(nums) || left != len(nums)-1; right++ {
-		if right < len(nums) {
-			sum += nums[right]
-		}
-		if sum == k {
-			if right > len(nums)-1 {
-				left++
-				ans--
-			}
-			ans++
-			container = append(container, []int{nums[left], nums[right]})
-		} else if sum > k {
-			for sum >= k {
-				if sum == k {
-					ans++
-					container = append(container, []int{nums[left], nums[right]})
-					break
-				}
-				sum -= nums[left]
-				left++
-			}
-		}
+	for i := 0; i < len(nums); i++ {
+		sum += nums[i]
 
+		if _, ok := m[sum-k]; ok {
+			ans += m[sum-k]
+		}
+		m[sum]++
 	}
 	return ans
 }

@@ -30,32 +30,30 @@ func main() {
 }
 
 func findKthLargest(nums []int, k int) int {
-	target := len(nums) - k
-
-	var partition func(left, right int) int
-	partition = func(left, right int) int {
-		pivot := nums[left]
-		j := left
-		for i := left + 1; i <= right; i++ {
-			if nums[i] < pivot {
-				j++
-				nums[j], nums[i] = nums[i], nums[j]
-			}
-		}
-		nums[j], nums[left] = nums[left], nums[j]
-		return j
-	}
-
+	target := len(nums) - k // target是目标值的下标
 	left, right := 0, len(nums)-1
-
 	for {
-		index := partition(left, right)
-		if index == target {
-			return nums[index]
-		} else if index > target {
-			right = index - 1
+		pos := partition(nums, left, right)
+		if pos == target {
+			return nums[pos]
+		} else if pos < target {
+			left = pos + 1
 		} else {
-			left = index + 1
+			right = pos - 1
 		}
 	}
+}
+
+func partition(nums []int, left, right int) int {
+	j := left
+	pivot := nums[left]
+
+	for i := left + 1; i <= right; i++ {
+		if pivot > nums[i] {
+			j++
+			nums[i], nums[j] = nums[j], nums[i]
+		}
+	}
+	nums[left], nums[j] = nums[j], nums[left]
+	return j
 }
